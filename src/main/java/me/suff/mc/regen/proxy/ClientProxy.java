@@ -15,7 +15,6 @@ import me.suff.mc.regen.common.entity.EntityItemOverride;
 import me.suff.mc.regen.common.entity.EntityLindos;
 import me.suff.mc.regen.common.entity.EntityWatcher;
 import me.suff.mc.regen.common.tiles.TileEntityHandInJar;
-import me.suff.mc.regen.compat.lucraft.LucraftCoreHandler;
 import me.suff.mc.regen.util.EnumCompatModids;
 import me.suff.mc.regen.util.FileUtil;
 import micdoodle8.mods.galacticraft.api.client.tabs.InventoryTabVanilla;
@@ -69,11 +68,6 @@ public class ClientProxy extends CommonProxy {
         }
         TabRegistry.registerTab(new InventoryTabRegeneration());
         TabRegistry.registerTab(new InventoryTabArch());
-
-        // LC Core
-        if (EnumCompatModids.LCCORE.isLoaded()) {
-            LucraftCoreHandler.registerEntry();
-        }
     }
 
 }

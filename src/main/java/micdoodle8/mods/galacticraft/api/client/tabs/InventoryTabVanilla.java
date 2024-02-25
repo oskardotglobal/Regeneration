@@ -16,7 +16,8 @@ public class InventoryTabVanilla extends AbstractTab {
 
     @Override
     public boolean shouldAddToList() {
-        return true;
+        // only add if MWC doesn't already create one
+        return TabRegistry.clazzMwcInventoryTab == null;
     }
 
 }

@@ -4,7 +4,6 @@ import me.suff.mc.regen.RegenConfig;
 import me.suff.mc.regen.client.skinhandling.SkinChangingHandler;
 import me.suff.mc.regen.client.skinhandling.SkinInfo;
 import me.suff.mc.regen.common.types.TypeHandler;
-import me.suff.mc.regen.compat.lucraft.PlayerCanRegenEvent;
 import me.suff.mc.regen.util.PlayerUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +46,7 @@ public interface IRegeneration extends INBTSerializable<NBTTagCompound> {
      * Returns if the player is currently <i>able to</i> regenerate
      */
     default boolean canRegenerate() {
-        return (RegenConfig.infiniteRegeneration || getRegenerationsLeft() > 0) && getPlayer().posY > 0 && !MinecraftForge.EVENT_BUS.post(new PlayerCanRegenEvent(getPlayer()));
+        return (RegenConfig.infiniteRegeneration || getRegenerationsLeft() > 0) && getPlayer().posY > 0;
     }
 
     void receiveRegenerations(int amount);

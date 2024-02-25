@@ -15,8 +15,6 @@ import me.suff.mc.regen.common.item.arch.capability.IArch;
 import me.suff.mc.regen.common.tiles.TileEntityHandInJar;
 import me.suff.mc.regen.common.traits.DnaHandler;
 import me.suff.mc.regen.common.types.TypeHandler;
-import me.suff.mc.regen.compat.lucraft.LucraftCoreHandler;
-import me.suff.mc.regen.compat.tardis.TardisModHandler;
 import me.suff.mc.regen.handlers.ActingForwarder;
 import me.suff.mc.regen.network.NetworkHandler;
 import me.suff.mc.regen.proxy.CommonProxy;
@@ -69,19 +67,6 @@ public class RegenerationMod {
 
         ActingForwarder.init();
         RegenTriggers.init();
-
-        if (EnumCompatModids.TARDIS.isLoaded()) {
-            LOG.info("Tardis mod Detected - Enabling Compatibility");
-            ActingForwarder.register(TardisModHandler.class, Side.SERVER);
-            TardisModHandler.registerEventBus();
-
-        }
-
-        if (EnumCompatModids.LCCORE.isLoaded()) {
-            LOG.info("Lucraft Core Detected - Enabling Compatibility");
-            ActingForwarder.register(LucraftCoreHandler.class, Side.SERVER);
-            LucraftCoreHandler.registerEventBus();
-        }
 
         GameRegistry.registerTileEntity(TileEntityHandInJar.class, new ResourceLocation(MODID, "handinjar"));
     }

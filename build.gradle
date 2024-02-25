@@ -49,36 +49,8 @@ minecraft {
 	}
 }
 
-repositories {
-	maven {
-		name = "IC2"
-		url = "http://maven.ic2.player.to"
-	}
-
-	maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven"
-	}
-
-	maven {
-		name = "JitPack"
-		url = "https://jitpack.io"
-	}
-
-	maven {
-		name = "Progwml6 maven"
-		url = "http://dvs1.progwml6.com/files/maven"
-	}
-}
-
-
 dependencies {
 	minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
-}
-
-dependencies {
-	implementation fg.deobf('com.github.Spectre0987:TardisMod:0.1.0E_Hotfix')
-	implementation fg.deobf('com.gitlab.lcoremodders:LucraftCore:3fe48363d9')
 }
 
 def core_plugin = "me.suff.mc.regen.asm.RegenerationPlugin"

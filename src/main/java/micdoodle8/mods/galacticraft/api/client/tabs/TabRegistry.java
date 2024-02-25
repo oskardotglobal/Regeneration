@@ -18,12 +18,13 @@ import java.util.List;
 
 public class TabRegistry {
 
+    public static Class<?> clazzMwcInventoryTab = null;
     public static Class<?> clazzNEIConfig = null;
     public static int recipeBookOffset;
     private static ArrayList<AbstractTab> tabList = new ArrayList<>();
     private static Class<?> clazzJEIConfig = null;
+
     private static Minecraft mc = FMLClientHandler.instance().getClient();
-    private static boolean initWithPotion;
 
     static {
         try {
@@ -39,6 +40,13 @@ public class TabRegistry {
             } catch (Exception ignore) {
                 // no log spam
             }
+        }
+
+        try {
+            // Checks for MWC by looking for this class
+            clazzMwcInventoryTab = Class.forName("com.paneedah.weaponlib.inventory.InventoryTab");
+        } catch (Exception ignore) {
+            // no log spam
         }
     }
 
@@ -62,6 +70,11 @@ public class TabRegistry {
 
     public static void updateTabValues(int cornerX, int cornerY, Class<?> selectedButton) {
         int count = 2;
+
+        if (clazzMwcInventoryTab != null) {
+            count += 3;
+        }
+
         for (int i = 0; i < TabRegistry.tabList.size(); i++) {
             AbstractTab t = TabRegistry.tabList.get(i);
 
@@ -70,10 +83,14 @@ public class TabRegistry {
                 t.x = cornerX + (count - 2) * 28;
                 t.y = cornerY - 28;
                 t.enabled = !t.getClass().equals(selectedButton);
-                t.potionOffsetLast = getPotionOffsetNEI();
+                t.potionOffsetLast = 0;
                 count++;
             }
         }
+    }
+
+    public static int getPotionOffsetNEI() {
+        return 0;
     }
 
     public static void addTabsToList(List<GuiButton> buttonList) {
@@ -83,68 +100,6 @@ public class TabRegistry {
             }
         }
 
-    }
-
-    public static int getPotionOffset() {
-        /**
-         * Disabled in 1.12.2 because a vanilla bug means potion offsets are currently not a thing The vanilla bug is that GuiInventory.initGui() resets GuiLeft to the recipe book version of GuiLeft, and in GuiRecipeBook.updateScreenPosition() it takes no account of potion offset even if the recipe book is inactive.
-         *
-         * // If at least one potion is active... if (doPotionOffsetVanilla()) { initWithPotion = true; return 60 + getPotionOffsetJEI() + getPotionOffsetNEI(); }
-         */
-
-        // No potions, no offset needed
-        initWithPotion = false;
-        return 0;
-    }
-
-    public static boolean doPotionOffsetVanilla() {
-        for (PotionEffect potioneffect : mc.player.getActivePotionEffects()) {
-            if (potioneffect.getPotion().shouldRender(potioneffect)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static int getPotionOffsetJEI() {
-        if (clazzJEIConfig != null) {
-            try {
-                Object enabled = clazzJEIConfig.getMethod("isOverlayEnabled").invoke(null);
-                if (enabled instanceof Boolean) {
-                    if (!((Boolean) enabled)) {
-                        // If JEI is disabled, no special change to getPotionOffset()
-                        return 0;
-                    }
-                    // Active JEI undoes the standard potion offset (they listen for GuiScreenEvent.PotionShiftEvent)
-                    return -60;
-                }
-            } catch (Exception ignore) {
-                // no log spam
-            }
-        }
-        return 0;
-    }
-
-    public static int getPotionOffsetNEI() {
-        if (initWithPotion && clazzNEIConfig != null) {
-            try {
-                // Check whether NEI is hidden and enabled
-                Object hidden = clazzNEIConfig.getMethod("isHidden").invoke(null);
-                Object enabled = clazzNEIConfig.getMethod("isEnabled").invoke(null);
-                if (hidden instanceof Boolean && enabled instanceof Boolean) {
-                    if ((Boolean) hidden || !((Boolean) enabled)) {
-                        // If NEI is disabled or hidden, it does not affect the tabs offset with potions
-                        return 0;
-                    }
-                    // But active NEI undoes the standard potion offset
-                    return -60;
-                }
-            } catch (Exception ignore) {
-                // no log spam
-            }
-        }
-        // No NEI, no change
-        return 0;
     }
 
     public static int getRecipeBookOffset(GuiInventory gui) {
@@ -160,7 +115,7 @@ public class TabRegistry {
             int guiLeft = (event.getGui().width - 176) / 2;
             int guiTop = (event.getGui().height - 166) / 2;
             recipeBookOffset = getRecipeBookOffset((GuiInventory) event.getGui());
-            guiLeft += getPotionOffset() + recipeBookOffset;
+            guiLeft +=  recipeBookOffset;
 
             TabRegistry.updateTabValues(guiLeft, guiTop, InventoryTabVanilla.class);
             TabRegistry.addTabsToList(event.getButtonList());

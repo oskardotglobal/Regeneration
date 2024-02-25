@@ -1,7 +1,6 @@
 package me.suff.mc.regen.common;
 
 import me.suff.mc.regen.RegenerationMod;
-import me.suff.mc.regen.compat.lucraft.PlayerCanRegenEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -25,18 +24,4 @@ public class RegenPermission {
         RegenerationMod.LOG.info("Registered Permission: " + permission);
         return permission;
     }
-
-    public static boolean isAllowedToRegeneration(EntityPlayer player) {
-        if (player.world.isRemote) return true;
-        return PermissionAPI.hasPermission(player, RegenPermission.CAN_REGENERATE);
-    }
-
-    // Stop the Player Regeneration if they are not allowed to!
-    @SubscribeEvent
-    public static void onRegenerate(PlayerCanRegenEvent event) {
-        if (!isAllowedToRegeneration(event.getEntityPlayer())) {
-            event.setCanceled(true);
-        }
-    }
-
 }
